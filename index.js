@@ -1,6 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var gitAdapter = require('./core/gitadapter');
+var WriteStream = require('./sdk/invoke');
+var QueryStream = require('./sdk/query');
 
 var PORT = 5000;
 var app = express();
@@ -35,6 +37,36 @@ app.post('/welcome',(req, res)=>{
         data:"welcome "+name
     })
 });
+
+app.post('/writestream',(req,res)=>{
+    var mydata = req.body;
+    
+    WriteStream.writeMultichain(JSON.stringify(mydata))
+    .then((result)=>{
+        res.json({
+            'data':result}
+        );
+    })
+    .catch((error)=>{
+        res.json({
+            'error':error}
+        );
+    });
+})
+
+app.get('/readFromStream', (req, res)=>{
+    QueryStream.readMultichain()
+    .then((result)=>{
+        res.json({
+            'data':result}
+        );
+    })
+    .catch((error)=>{
+        res.json({
+            'error':error}
+        );
+    });
+})
 
 app.listen(PORT);
 
