@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var gitAdapter = require('./core/gitadapter');
 var WriteStream = require('./sdk/invoke');
 var QueryStream = require('./sdk/query');
+var MongoService =  require('./mongo/mongoservice')
 
 var PORT = 5000;
 var app = express();
@@ -66,6 +67,19 @@ app.get('/readFromStream', (req, res)=>{
             'error':error}
         );
     });
+})
+
+app.get('/finduser', (req, res)=>{
+    console.log(req.query)
+    var username = req.query['xyz'];
+    
+    
+    MongoService.searchUser(username).then((result)=>{
+        console.log(result);
+        res.json(result)
+    }).catch((error)=>{
+        res.json(error)
+    })
 })
 
 app.listen(PORT);
